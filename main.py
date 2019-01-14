@@ -33,17 +33,18 @@ while True:
 		rightEye = shape[rStart:rEnd]
 		leftEAR = eye_aspect_ratio(leftEye)
 		rightEAR = eye_aspect_ratio(rightEye)
-		ear = (leftEAR + rightEAR) / 2.0
+		ear = (leftEAR + rightEAR)
+		cv2.putText(frame, ("leftEAR: %.3f rightEAR: %.3f flag: %d \n" %(leftEAR, rightEAR, flag)), (10, 30),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
 		leftEyeHull = cv2.convexHull(leftEye)
 		rightEyeHull = cv2.convexHull(rightEye)
 		cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
 		cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
         
           
-		if ear < thresh:
+		if ((leftEAR < thresh) & (rightEAR < thresh)):
 			flag += 1
 			blink = True
-			print (flag)
 			if flag >= frame_check:
 				cv2.putText(frame, "****************ALERT!****************", (10, 30),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
@@ -53,6 +54,7 @@ while True:
 		else:
 			flag = 0
 			blink = False
+	print ("leftEAR: %.3f rightEAR: %.3f flag: %d \n" %(leftEAR, rightEAR, flag))
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
 	if key == ord("q"):
